@@ -1,0 +1,8 @@
+package com.example.suemember.domain.repository;
+
+
+import com.example.suemember.domain.entity.Member;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface MemberRepository  extends JpaRepository<Member, Long> {
+}
