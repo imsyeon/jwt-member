@@ -45,13 +45,24 @@ public class MemberController {
         Member loginMember = memberService.loginMember(member.getEmail(), member.getPassword());
 
         // 세션
-        HttpSession httpSession = request.getSession(false);
+        HttpSession httpSession = request.getSession();
+        httpSession.setAttribute("loginMember",loginMember);
 
-        if (httpSession != null){
-            httpSession.setAttribute("loginMember", loginMember);
-        }
 
         return ResponseEntity.status(HttpStatus.OK).body(loginMember);
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity logout(HttpServletRequest request) {
+
+        HttpSession httpSession = request.getSession(false);
+
+        if (httpSession!= null) {
+            httpSession.invalidate();
+        }
+
+
+        return ResponseEntity.status(HttpStatus.OK).body("logout");
     }
 
 
