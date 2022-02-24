@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -26,8 +27,15 @@ public class MemberServiceImpl implements MemberService{
     }
 
     @Override
-    public Member getMember(Long id) {
-        return null;
+    public Member loginMember(String email, String password) {
+
+        Optional<Member> loginMember = memberRepository.findByEmailAndPassword(email,password);
+
+        if (!loginMember.isPresent()){
+            throw new IllegalArgumentException("잘못된 로그인 정보입니다.");
+        }
+
+        return loginMember.get();
     }
 
     @Override
