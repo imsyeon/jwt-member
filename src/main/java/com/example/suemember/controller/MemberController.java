@@ -46,7 +46,7 @@ public class MemberController {
 
         // 세션
         HttpSession httpSession = request.getSession();
-        httpSession.setAttribute("loginMember",loginMember);
+        httpSession.setAttribute("loginMember", loginMember);
 
 
         return ResponseEntity.status(HttpStatus.OK).body(loginMember);
@@ -57,13 +57,27 @@ public class MemberController {
 
         HttpSession httpSession = request.getSession(false);
 
-        if (httpSession!= null) {
+        if (httpSession != null) {
             httpSession.invalidate();
         }
-
 
         return ResponseEntity.status(HttpStatus.OK).body("logout");
     }
 
+    //Test-Header값 임의로 지정해서 로그아웃
+    @GetMapping("/logout2")
+    public ResponseEntity logout2(@RequestHeader("Test-Header") String token, HttpServletRequest request) {
+
+        if(token.equals("ok")) {
+            HttpSession httpSession = request.getSession(false);
+
+            if (httpSession != null) {
+                httpSession.invalidate();
+            }
+            return ResponseEntity.status(HttpStatus.OK).body("logout");
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("fail");
+    }
 
 }
