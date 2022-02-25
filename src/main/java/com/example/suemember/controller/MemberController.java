@@ -39,8 +39,6 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody Member member, HttpServletRequest request) {
 
-        System.out.println("login controller");
-
         Member loginMember = memberService.loginMember(member.getEmail(), member.getPassword());
 
         // 세션
@@ -67,12 +65,12 @@ public class MemberController {
     @GetMapping("/logout2")
     public ResponseEntity logout2(@RequestHeader("Test-Header") String token, HttpServletRequest request) {
 
-        if (token.equals("ok")) {
-            HttpSession httpSession = request.getSession(false);
+        HttpSession httpSession = request.getSession(false);
 
-            if (httpSession != null) {
-                httpSession.invalidate();
-            }
+        if (token.equals("ok") && httpSession != null) {
+
+            httpSession.invalidate();
+
             return ResponseEntity.status(HttpStatus.OK).body("logout");
         }
 
@@ -83,13 +81,38 @@ public class MemberController {
     @PatchMapping("/update/{id}")
     public ResponseEntity updateMemeber(@RequestHeader("Test-Header") String token,
                                         @RequestBody Member member, @PathVariable("id") Long id,
-                                        HttpSession httpSession) {
+                                        HttpServletRequest request) {
 
-        if (token.equals("ok")) {
+        HttpSession httpSession = request.getSession(false);
+
+        if (token.equals("ok") && httpSession != null) {
+
             memberService.updateMember(id, member);
             httpSession.invalidate();
+
             return ResponseEntity.status(HttpStatus.OK).body("update succeed");
         }
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("update fail");
+    }
+
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteMemer(@RequestHeader("Test-Header") String token,
+                                      @PathVariable("id") Long id,
+                                      HttpServletRequest request) {
+
+        HttpSession httpSession = request.getSession(false);
+
+        if (token.equals("ok") && httpSession != null) {
+
+            memberService.deleteMember(id);
+            httpSession.invalidate();
+
+            return ResponseEntity.status(HttpStatus.OK).body("bye bye!");
+
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원 탈퇴 실패");
     }
 }

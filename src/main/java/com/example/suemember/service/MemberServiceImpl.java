@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class MemberServiceImpl implements MemberService{
+public class MemberServiceImpl implements MemberService {
 
     @Autowired
     private MemberRepository memberRepository;
@@ -29,9 +29,9 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public Member loginMember(String email, String password) {
 
-        Optional<Member> loginMember = memberRepository.findByEmailAndPassword(email,password);
+        Optional<Member> loginMember = memberRepository.findByEmailAndPassword(email, password);
 
-        if (!loginMember.isPresent()){
+        if (!loginMember.isPresent()) {
             throw new IllegalArgumentException("잘못된 로그인 정보입니다.");
         }
 
@@ -41,14 +41,12 @@ public class MemberServiceImpl implements MemberService{
     @Override
     public Member updateMember(Long id, Member member) {
 
-        Member updateMember = memberRepository.findById(id).orElseThrow(() ->{
-            return new IllegalArgumentException("회원찾기 실패") ;
+        Member updateMember = memberRepository.findById(id).orElseThrow(() -> {
+            return new IllegalArgumentException("회원찾기 실패");
         });
 
         updateMember.setMemberName(member.getMemberName());
         updateMember.setPassword(member.getPassword());
-
-        System.out.println(updateMember);
 
         return memberRepository.save(updateMember);
     }
@@ -56,6 +54,7 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public void deleteMember(Long id) {
+        memberRepository.deleteById(id);
 
     }
 }
