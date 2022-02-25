@@ -40,8 +40,19 @@ public class MemberServiceImpl implements MemberService{
 
     @Override
     public Member updateMember(Long id, Member member) {
-        return null;
+
+        Member updateMember = memberRepository.findById(id).orElseThrow(() ->{
+            return new IllegalArgumentException("회원찾기 실패") ;
+        });
+
+        updateMember.setMemberName(member.getMemberName());
+        updateMember.setPassword(member.getPassword());
+
+        System.out.println(updateMember);
+
+        return memberRepository.save(updateMember);
     }
+
 
     @Override
     public void deleteMember(Long id) {

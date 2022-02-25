@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/member")
@@ -68,7 +67,7 @@ public class MemberController {
     @GetMapping("/logout2")
     public ResponseEntity logout2(@RequestHeader("Test-Header") String token, HttpServletRequest request) {
 
-        if(token.equals("ok")) {
+        if (token.equals("ok")) {
             HttpSession httpSession = request.getSession(false);
 
             if (httpSession != null) {
@@ -80,4 +79,17 @@ public class MemberController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("fail");
     }
 
+
+    @PatchMapping("/update/{id}")
+    public ResponseEntity updateMemeber(@RequestHeader("Test-Header") String token,
+                                        @RequestBody Member member, @PathVariable("id") Long id,
+                                        HttpSession httpSession) {
+
+        if (token.equals("ok")) {
+            memberService.updateMember(id, member);
+            httpSession.invalidate();
+            return ResponseEntity.status(HttpStatus.OK).body("update succeed");
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("update fail");
+    }
 }
