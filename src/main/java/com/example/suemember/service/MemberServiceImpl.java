@@ -31,11 +31,12 @@ public class MemberServiceImpl implements MemberService {
 
         Optional<Member> loginMember = memberRepository.findByEmailAndPassword(email, password);
 
-        if (!loginMember.isPresent()) {
-            throw new IllegalArgumentException("잘못된 로그인 정보입니다.");
+        if (loginMember.isPresent()) {
+
+           return loginMember.get();
         }
 
-        return loginMember.get();
+        throw new IllegalArgumentException("잘못된 로그인 정보입니다.");
     }
 
     @Override
