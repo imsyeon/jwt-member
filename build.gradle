@@ -30,6 +30,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     // 코드 수정 시 재시작하지 않고 실행 가능한 설정
     compileOnly("org.springframework.boot:spring-boot-devtools")
+    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 }
 
 tasks.named('test') {

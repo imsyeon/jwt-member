@@ -36,34 +36,10 @@ public class MemberController {
         return member;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity login(@RequestBody Member member, HttpServletRequest request) {
-
-        Member loginMember = memberService.loginMember(member.getEmail(), member.getPassword());
-
-        // 세션
-        HttpSession httpSession = request.getSession();
-        httpSession.setAttribute("loginMember", loginMember);
-
-
-        return ResponseEntity.status(HttpStatus.OK).body(loginMember);
-    }
-
-    @GetMapping("/logout")
-    public ResponseEntity logout(HttpServletRequest request) {
-
-        HttpSession httpSession = request.getSession(false);
-
-        if (httpSession != null) {
-            httpSession.invalidate();
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body("logout");
-    }
 
     //Test-Header값 임의로 지정해서 로그아웃
-    @GetMapping("/logout2")
-    public ResponseEntity logout2(@RequestHeader("Test-Header") String token, HttpServletRequest request) {
+    @GetMapping("/logout")
+    public ResponseEntity logout(@RequestHeader("Test-Header") String token, HttpServletRequest request) {
 
         HttpSession httpSession = request.getSession(false);
 

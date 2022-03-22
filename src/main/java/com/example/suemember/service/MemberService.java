@@ -1,7 +1,5 @@
 package com.example.suemember.service;
-
 import com.example.suemember.domain.entity.Member;
-
 import java.util.List;
 
 public interface MemberService {
