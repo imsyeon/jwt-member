@@ -17,7 +17,9 @@ public class MemberController {
     private final MemberService memberService;
 
     public MemberController(MemberService memberService) {
+
         this.memberService = memberService;
+
     }
 
     // 모든 회원 정보
@@ -34,6 +36,19 @@ public class MemberController {
         member = memberService.addNewMember(member);
 
         return member;
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity login(@RequestBody Member member, HttpServletRequest request) {
+
+        Member loginMember = memberService.loginMember(member.getEmail(), member.getPassword());
+
+        // 세션
+        HttpSession httpSession = request.getSession();
+        httpSession.setAttribute("loginMember", loginMember);
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(loginMember);
     }
 
 

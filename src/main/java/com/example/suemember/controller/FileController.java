@@ -70,12 +70,9 @@ public class FileController {
 
         String url = "http://49.247.36.30:8090/revit/remote.php/dav/files/sooyeon/testfolder/" + multipartFile.getOriginalFilename();
 
-        System.out.println("responseEntity" + requestEntity.getBody());
-
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
 
-        System.out.println(response.getStatusCode());
 
     }
 

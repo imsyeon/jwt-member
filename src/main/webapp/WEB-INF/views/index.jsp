@@ -23,7 +23,7 @@
         });
 
         function boardList() {
-            // console.log('/board/list?page='+page +'&searchKeyword='+searchKeyword+'&sort='+sort + '&dir=' +dir);
+
             $.ajax({
                 url: '/board/list?page=' + page + '&searchKeyword=' + searchKeyword + '&sort=' + sort + '&dir=' + dir,
                 method: 'GET',
@@ -38,13 +38,12 @@
         }
 
         function boradResult(data) {
-            //  let querySelector = document.querySelector('tbody#list').empty();
+
 
             $('tbody#list').empty();
 
             $.each(data.content, function (idx, board) {
-                //console.log(data.content);
-                //console.log(idx,board);
+
 
                 $("<tr>")
                     .append($("<td>").html(board.seq))
@@ -58,20 +57,8 @@
                     .appendTo('tbody#list');
 
 
-            });// each
-            //  data.content.forEach(function (idx,board){
-            //      $("<tr>")
-            //              .append($("<td>").html(board.seq))
-            //              .append($("<td>").html(board.title))
-            //              .append($("<td>").html(board.content))
-            //              .append($("<td>").html(board.writer))
-            //              .append($("<td>").html(board.createDate))
-            //              .append($("<td>").html("<button class='btn btn-success' id='btnSelect'>조회</button>"))
-            //              .append($("<td>").html("<button class='btn btn-primary' id='btnDelete'>삭제</button>"))
-            //              .append($("<input type='hidden' id='hidden_seq'>").val(board.seq))
-            //              .appendTo('tbody#list');
-            //         console.log(board.seq);
-            // }) ;
+            });
+
             let pNum = '';
             for (let i = 1; i <= data.totalPages; i++) {
                 pNum += '<a href="#" onclick="updatePage(' + i + ')" class="page-btn">' + i + '</a>';
@@ -120,7 +107,7 @@
 
         function boardSelectResult(data) {
             let board = data;
-            //console.log(board);
+
             document.querySelector("input[name=seq]").value = board.seq;
             document.querySelector("input[name=title]").value = board.title;
             document.querySelector("input[name=content]").value = board.content;
