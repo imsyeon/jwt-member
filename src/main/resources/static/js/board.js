@@ -1,11 +1,10 @@
+let page = 0;
+let searchKeyword = '';
+let sort = ''
+let dir = '';
 
-    let page = 0;
-    let searchKeyword = '';
-    let sort = ''
-    let dir = '';
 
-
-    $(function () {
+$(function () {
     boardList();
     boardSelect();
     boardDelete();
@@ -14,7 +13,7 @@
     boardUpdate();
 });
 
-    function boardList() {
+function boardList() {
 
     $.ajax({
         url: '/board/list?page=' + page + '&searchKeyword=' + searchKeyword + '&sort=' + sort + '&dir=' + dir,
@@ -29,7 +28,7 @@
     });
 }
 
-    function boradResult(data) {
+function boradResult(data) {
 
 
     $('tbody#list').empty();
@@ -37,54 +36,53 @@
     $.each(data.content, function (idx, board) {
 
 
-    $("<tr>")
-    .append($("<td>").html(board.seq))
-    .append($("<td>").html(board.title))
-    .append($("<td>").html(board.content))
-    .append($("<td>").html(board.writer))
-    .append($("<td>").html(board.createDate.substr(0, 10)))
-    .append($("<td>").html("<button class='btn btn-success' id='btnSelect'>조회</button>"))
-    .append($("<td>").html("<button class='btn btn-primary' id='btnDelete'>삭제</button>"))
-    .append($("<input type='hidden' id='hidden_seq'>").val(board.seq))
-    .appendTo('tbody#list');
+        $("<tr>")
+            .append($("<td>").html(board.seq))
+            .append($("<td>").html(board.title))
+            .append($("<td>").html(board.content))
+            .append($("<td>").html(board.writer))
+            .append($("<td>").html(board.createDate.substr(0, 10)))
+            .append($("<td>").html("<button class='btn btn-success' id='btnSelect'>조회</button>"))
+            .append($("<td>").html("<button class='btn btn-primary' id='btnDelete'>삭제</button>"))
+            .append($("<input type='hidden' id='hidden_seq'>").val(board.seq))
+            .appendTo('tbody#list');
 
 
-});
+    });
 
     let pNum = '';
     for (let i = 1; i <= data.totalPages; i++) {
-    pNum += '<a href="#" onclick="updatePage(' + i + ')" class="page-btn">' + i + '</a>';
-    console.log(pNum);
+        pNum += '<a href="#" onclick="updatePage(' + i + ')" class="page-btn">' + i + '</a>';
 
-}
+
+    }
     $('#paging').html(pNum);
 }
 
 
-    function updatePage(page2) {
+function updatePage(page2) {
     page = page2 - 1
     boardList()
 }
 
-    function search() {
+function search() {
+
     searchKeyword = $("#searchKeyword").val();
-    console.log(searchKeyword);
     boardList()
 }
 
-    function sortSeq(sortOpt, dirOpt) {
+function sortSeq(sortOpt, dirOpt) {
     sort = sortOpt;
     dir = dirOpt;
-    console.log(sort, dir);
 
     boardList()
 }
 
-    //상세글
-    function boardSelect() {
+//상세글
+function boardSelect() {
     $('body').on('click', '#btnSelect', function () {
         let seq = $(this).closest('tr').find('#hidden_seq').val();
-        // console.log(seq);
+
         $.ajax({
             url: '/board/' + seq,
             method: 'GET',
@@ -97,7 +95,7 @@
     })
 }
 
-    function boardSelectResult(data) {
+function boardSelectResult(data) {
     let board = data;
 
     document.querySelector("input[name=seq]").value = board.seq;
@@ -108,12 +106,12 @@
 
 }
 
-    function boardDelete() {
+function boardDelete() {
 
     $('body').on('click', '#btnDelete', function () {
         let seq = $(this).closest('tr').find('#hidden_seq').val();
         let result = confirm('글을 정말 삭제하시겠습니까?');
-        console.log('result : ' + result);
+
         if (result) {
             $.ajax({
                 url: '/board/' + seq,
@@ -129,7 +127,7 @@
     });
 }
 
-    function boardInsert() {
+function boardInsert() {
 
     $('body').on('click', '#btnInsert', function () {
         let seq = $("input:text[name='seq']").val();
@@ -157,7 +155,7 @@
                     alert("상태코드 " + status + "에러메시지" + msg);
                 },
                 success: function (data) {
-                    console.log(data);
+
                     if (data == 1) {
                         $('#btnInit').trigger('click');
                     }
@@ -168,7 +166,7 @@
     });
 }
 
-    function form_init() {
+function form_init() {
     $('#btnInit').on('click', function () {
         $('#insertBoard').each(function () {
             this.reset();
@@ -176,7 +174,7 @@
     });
 }
 
-    function boardUpdate() {
+function boardUpdate() {
 
     $('body').on('click', '#btnUpdate', function () {
 
@@ -191,7 +189,7 @@
             writer: writer
         };
         let result = confirm('글을 정말 수정하시겠습니까?');
-        console.log('result : ' + result);
+
         if (result) {
             $.ajax({
                 url: '/board/' + seq,
@@ -203,7 +201,7 @@
                     alert("상태코드 " + status + "에러메시지" + msg);
                 },
                 success: function (data) {
-                    console.log(data);
+
                     if (data == 1) {
                         $('#btnInit').trigger('click');
                     }
