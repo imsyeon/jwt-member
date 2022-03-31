@@ -10,6 +10,7 @@
 <body>
 
 <jsp:include page="./include/board.jsp"></jsp:include>
+<jsp:include page="./include/login.jsp"></jsp:include>
 
 </body>
 </html>

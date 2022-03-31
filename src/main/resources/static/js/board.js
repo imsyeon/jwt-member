@@ -11,7 +11,35 @@ $(function () {
     boardInsert();
     form_init();
     boardUpdate();
+    hide();
 });
+
+function board_write() {
+
+    let boardWriteDiv = document.getElementById("boardWriteDiv");
+    let boardListDiv = document.getElementById("boardListDiv");
+
+    boardWriteDiv.style.display = "block";
+    boardListDiv.style.display = "none";
+
+}
+
+function board_list() {
+
+    let boardListDiv = document.getElementById("boardListDiv");
+    let boardWriteDiv = document.getElementById("boardWriteDiv");
+
+    boardListDiv.style.display = "block";
+    boardWriteDiv.style.display = "none";
+
+}
+
+function hide() {
+
+    document.getElementById("boardWriteDiv").style.display = "none";
+    document.getElementById("boardListDiv").style.display = "none";
+}
+
 
 function boardList() {
 

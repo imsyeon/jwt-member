@@ -15,52 +15,63 @@
     <script src="/js/board.js" type="text/javascript"></script>
 </head>
 <body>
-<div class="text-center">
-    <h2>글 등록</h2>
+
+
+<div>
+    <button onclick="board_list();" >글목록</button>
+    <button onclick="board_write();" >글쓰기</button>
 </div>
 
-<div class="container p-3">
-    <form id="insertBoard" method="post" action="/board/write">
-        <table>
-            <tr class="form-group">
-                <th><label>글번호 :</label></th>
-                <td><input class="form-control" type="text" name="seq" readonly>
-                </td>
-            </tr>
-            <tr class="form-group">
-                <th>제목 :</th>
-                <td><input class="form-control" type="text" name="title"></td>
-            </tr>
-            <tr class="form-group">
-                <th>내용 :</th>
-                <td><input class="form-control" type="text" name="content"></td>
-            </tr>
-            <tr class="form-group">
-                <th>글쓴이 :</th>
-                <td><input class="form-control" type="text" name="writer"></td>
-            </tr>
-            <tr class="form-group">
-                <th>날짜 :</th>
-                <td><input class="form-control" type="text" name="createDate">
-                </td>
-            </tr>
 
-        </table>
+<div id="boardWriteDiv">
+    <div class="text-center">
+        <h2>글 등록</h2>
+    </div>
 
-        <div class="container p-3">
-            <div class="btn-group">
-                <input type="button" value="등록" class="btn btn-primary"
-                       id="btnInsert">
-                <input type="button" value="초기화" class="btn btn-info"
-                       id="btnInit">
-                <input type="button" value="수정" class="btn btn-secondary"
-                       id="btnUpdate">
+
+    <div class="container p-3">
+        <form id="insertBoard" method="post" action="/board/write">
+            <table>
+                <tr class="form-group">
+                    <th><label>글번호 :</label></th>
+                    <td><input class="form-control" type="text" name="seq" readonly>
+                    </td>
+                </tr>
+                <tr class="form-group">
+                    <th>제목 :</th>
+                    <td><input class="form-control" type="text" name="title"></td>
+                </tr>
+                <tr class="form-group">
+                    <th>내용 :</th>
+                    <td><input class="form-control" type="text" name="content"></td>
+                </tr>
+                <tr class="form-group">
+                    <th>글쓴이 :</th>
+                    <td><input class="form-control" type="text" name="writer"></td>
+                </tr>
+                <tr class="form-group">
+                    <th>날짜 :</th>
+                    <td><input class="form-control" type="text" name="createDate">
+                    </td>
+                </tr>
+
+            </table>
+
+            <div class="container p-3">
+                <div class="btn-group">
+                    <input type="button" value="등록" class="btn btn-primary"
+                           id="btnInsert">
+                    <input type="button" value="초기화" class="btn btn-info"
+                           id="btnInit">
+                    <input type="button" value="수정" class="btn btn-secondary"
+                           id="btnUpdate">
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
-<div class="text-center">
+<div class="text-center" id="boardListDiv">
     <div>
         <input class="form-control" type="text" id="searchKeyword">
         <button onclick="search()">검색하기</button>
