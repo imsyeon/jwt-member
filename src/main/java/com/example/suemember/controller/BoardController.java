@@ -11,16 +11,24 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @NoArgsConstructor
-@RestController
+@Controller
 @RequestMapping("/board")
 public class BoardController {
     @Autowired
     private BoardService boardService;
 
+    // view
+    @GetMapping("/index")
+    public String index() {
+        return "/index";
+    }
+
     // 게시판 리스트
+    @ResponseBody
     @GetMapping("/list")
     public Page<Board> getBoardList(
             @PageableDefault(size = 5) Pageable pageable,
@@ -38,6 +46,7 @@ public class BoardController {
 
     }
     // 게시글 등록
+    @ResponseBody
     @PostMapping("/write")
     public ResponseEntity insertBoard(@RequestBody Board board) {
         Board write = boardService.insertBoard(board);
@@ -46,6 +55,7 @@ public class BoardController {
     }
 
     // 상세 게시글
+    @ResponseBody
     @GetMapping("/{seq}")
     public Board getBoard(@PathVariable("seq") Long seq) {
 
@@ -53,6 +63,7 @@ public class BoardController {
     }
 
     // 게시글 수정
+    @ResponseBody
     @PatchMapping("/{seq}")
     public Board updateBoard(@PathVariable("seq") Long seq, @RequestBody Board board) {
 
@@ -61,6 +72,7 @@ public class BoardController {
     }
 
     // 게시글 삭제
+    @ResponseBody
     @DeleteMapping("/{seq}")
     public ResponseEntity deleteBoard(@PathVariable("seq") Long seq) {
 
