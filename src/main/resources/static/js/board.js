@@ -86,7 +86,7 @@
         let seq = $(this).closest('tr').find('#hidden_seq').val();
         // console.log(seq);
         $.ajax({
-            url: 'board/' + seq,
+            url: '/board/' + seq,
             method: 'GET',
             error: function (error, status, msg) {
                 alert("상태코드 " + status + "에러메시지" + msg);
@@ -116,7 +116,7 @@
         console.log('result : ' + result);
         if (result) {
             $.ajax({
-                url: 'board/' + seq,
+                url: '/board/' + seq,
                 method: 'DELETE',
                 error: function (error, status, msg) {
                     alert("상태코드 " + status + "에러메시지" + msg);
@@ -194,7 +194,7 @@
         console.log('result : ' + result);
         if (result) {
             $.ajax({
-                url: 'board/' + seq,
+                url: '/board/' + seq,
                 method: 'PATCH',
                 contentType: 'application/json;charset=utf-8',
                 dataType: 'json',

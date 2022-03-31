@@ -27,6 +27,7 @@ public class BoardController {
         return "/index";
     }
 
+
     // 게시판 리스트
     @ResponseBody
     @GetMapping("/list")
