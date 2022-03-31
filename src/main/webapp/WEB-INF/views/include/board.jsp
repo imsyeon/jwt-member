@@ -13,6 +13,7 @@
             type="text/javascript"></script>
 
     <script src="/js/board.js" type="text/javascript"></script>
+    <script src="/js/common.js" type="text/javascript"></script>
 </head>
 <body>
 
@@ -73,7 +74,7 @@
 
 <div class="text-center" id="boardListDiv">
     <div>
-        <input class="form-control" type="text" id="searchKeyword">
+        <input class="form-control" type="text" id="searchKeyword" >
         <button onclick="search()">검색하기</button>
     </div>
     <h2>글 목록 Ajax</h2>

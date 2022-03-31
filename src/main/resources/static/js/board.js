@@ -11,8 +11,8 @@ $(function () {
     boardInsert();
     form_init();
     boardUpdate();
-    hide();
 });
+
 
 function board_write() {
 
@@ -28,16 +28,15 @@ function board_list() {
 
     let boardListDiv = document.getElementById("boardListDiv");
     let boardWriteDiv = document.getElementById("boardWriteDiv");
+    let searchKeywordId = document.getElementById("searchKeyword");
 
     boardListDiv.style.display = "block";
     boardWriteDiv.style.display = "none";
+    searchKeywordId.value ='';
 
-}
-
-function hide() {
-
-    document.getElementById("boardWriteDiv").style.display = "none";
-    document.getElementById("boardListDiv").style.display = "none";
+    searchKeyword = searchKeywordId.value;
+    page = 0;
+    boardList();
 }
 
 
@@ -70,7 +69,7 @@ function boradResult(data) {
             .append($("<td>").html(board.content))
             .append($("<td>").html(board.writer))
             .append($("<td>").html(board.createDate.substr(0, 10)))
-            .append($("<td>").html("<button class='btn btn-success' id='btnSelect'>조회</button>"))
+            .append($("<td>").html("<button class='btn btn-success' id='btnSelect' onclick='board_write();'>조회</button>"))
             .append($("<td>").html("<button class='btn btn-primary' id='btnDelete'>삭제</button>"))
             .append($("<input type='hidden' id='hidden_seq'>").val(board.seq))
             .appendTo('tbody#list');
@@ -94,7 +93,7 @@ function updatePage(page2) {
 }
 
 function search() {
-
+    page =0;
     searchKeyword = $("#searchKeyword").val();
     boardList()
 }
