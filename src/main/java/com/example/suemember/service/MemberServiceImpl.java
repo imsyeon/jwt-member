@@ -2,13 +2,16 @@ package com.example.suemember.service;
 
 import com.example.suemember.domain.entity.Member;
 import com.example.suemember.domain.repository.MemberRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
+@Slf4j
 public class MemberServiceImpl implements MemberService {
 
     @Autowired
@@ -22,6 +25,8 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member addNewMember(Member member) {
+        // 중복체크, 공백 체크, 이메일 유효성 확인
+        log.info(member.getAge());
 
         return memberRepository.save(member);
     }

@@ -23,6 +23,7 @@ import java.util.UUID;
 public class FileController {
 
     @GetMapping("/download")
+    // 안 쓰는 건 날리기
     public void download(@RequestParam("downloadfile") String downloadFile) throws IOException {
 
         // basic auth 처리, 실제 파일 서버 접속 정보
@@ -32,23 +33,23 @@ public class FileController {
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(username, password);
 
-        HttpEntity request = new HttpEntity(headers);
+        HttpEntity request = new HttpEntity(headers); // 안 뜨게끔 구현
 
         String fileUrl = "http://49.247.36.30:8090/revit/remote.php/dav/files/sooyeon/testfolder/" + downloadFile;
 
         URI url = URI.create(fileUrl);
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<byte[]> response = restTemplate.exchange(url, HttpMethod.GET, request, byte[].class);
-        byte[] buffer = response.getBody();
+        byte[] buffer = response.getBody(); // fileUrl 유무를 체크해야함
 
         String fileName = UUID.randomUUID().toString(); // 파일명 (랜덤생성)
 
-        String ext = "." + StringUtils.getFilenameExtension(fileUrl); // 확장자 추출
+        String ext = "." + StringUtils.getFilenameExtension(fileUrl); // 확장자 추출 stringUtills를 사용하지 않고 fileUrl을 추출해서 사용하는 방법도 찾아보기 (순수 java)
 
         Path target = Paths.get("/Users/imsooyeon/test", fileName + ext); // 파일 저장 경로
 
         try {
-            FileCopyUtils.copy(buffer, target.toFile());
+            FileCopyUtils.copy(buffer, target.toFile()); // file copy 말고 다른 것도 있음. 찾아보기
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,7 +73,7 @@ public class FileController {
 
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, String.class);
-
+        // response 나오는 값 확인하기
 
     }
 
