@@ -10,8 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
+
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/")
 public class MemberController {
 
     private final MemberService memberService;
@@ -23,14 +24,14 @@ public class MemberController {
     }
 
     // 모든 회원 정보
-    @GetMapping("/all")
+    @GetMapping("/members")
     public List<Member> getAllMember() {
 
         return memberService.getAllMember();
     }
 
     // 회원가입
-    @PostMapping("/add")
+    @PostMapping("/member")
     public Member addNewMember(@RequestBody Member member) {
 
         member = memberService.addNewMember(member);
@@ -39,7 +40,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody Member member, HttpServletRequest request) {
+    public ResponseEntity<Member> login(@RequestBody Member member, HttpServletRequest request) {
 
         Member loginMember = memberService.loginMember(member.getEmail(), member.getPassword());
 
@@ -54,7 +55,7 @@ public class MemberController {
 
     //Test-Header값 임의로 지정해서 로그아웃
     @GetMapping("/logout")
-    public ResponseEntity logout(@RequestHeader("Test-Header") String token, HttpServletRequest request) {
+    public ResponseEntity<String> logout(@RequestHeader("Test-Header") String token, HttpServletRequest request) {
 
         HttpSession httpSession = request.getSession(false);
 
@@ -69,29 +70,29 @@ public class MemberController {
     }
 
 
-    @PatchMapping("/update/{id}")
-    public ResponseEntity updateMemeber(@RequestHeader("Test-Header") String token,
-                                        @RequestBody Member member, @PathVariable("id") Long id,
-                                        HttpServletRequest request) {
+    @PatchMapping("/members/{id}")
+    public ResponseEntity<String> updateMemeber(@RequestHeader("Test-Header") String token,
+                                                @RequestBody Member member, @PathVariable("id") Long id,
+                                                HttpServletRequest request) {
 
         HttpSession httpSession = request.getSession(false);
 
         if (token.equals("ok") && httpSession != null) {
 
-            memberService.updateMember(id, member);
+          Member updateMember =  memberService.updateMember(id, member);
             httpSession.invalidate();
 
-            return ResponseEntity.status(HttpStatus.OK).body("update succeed");
+            return ResponseEntity.status(HttpStatus.OK).body(updateMember.toString());
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("update fail");
     }
 
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity deleteMemer(@RequestHeader("Test-Header") String token,
-                                      @PathVariable("id") Long id,
-                                      HttpServletRequest request) {
+    @DeleteMapping("/members/{id}")
+    public ResponseEntity<String> deleteMember(@RequestHeader("Test-Header") String token,
+                                              @PathVariable("id") Long id,
+                                              HttpServletRequest request) {
 
         HttpSession httpSession = request.getSession(false);
 
