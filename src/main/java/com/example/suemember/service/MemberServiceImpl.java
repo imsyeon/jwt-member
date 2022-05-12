@@ -47,9 +47,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Member updateMember(Long id, Member member) {
 
-        Member updateMember = memberRepository.findById(id).orElseThrow(() -> {
-            return new IllegalArgumentException("회원찾기 실패");
-        });
+        Member updateMember = memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("회원찾기 실패"));
 
         updateMember.setMemberName(member.getMemberName());
         updateMember.setPassword(member.getPassword());
