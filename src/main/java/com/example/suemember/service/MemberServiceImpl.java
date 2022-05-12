@@ -1,9 +1,12 @@
 package com.example.suemember.service;
 
+import com.example.suemember.domain.entity.Auth;
 import com.example.suemember.domain.entity.Member;
+import com.example.suemember.domain.repository.AuthRepository;
 import com.example.suemember.domain.repository.MemberRepository;
+import com.example.suemember.dto.TokenResponse;
+import com.example.suemember.jwt.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,8 +17,16 @@ import java.util.Optional;
 @Slf4j
 public class MemberServiceImpl implements MemberService {
 
-    @Autowired
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final AuthRepository authRepository;
+    //private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public MemberServiceImpl(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository, AuthRepository authRepository) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.memberRepository = memberRepository;
+        this.authRepository = authRepository;
+    }
 
     @Override
     public List<Member> getAllMember() {
@@ -24,11 +35,31 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member addNewMember(Member member) {
+    public TokenResponse addNewMember(Member memberRequest) {
         // 중복체크, 공백 체크, 이메일 유효성 확인
-        log.info(member.getAge());
+        log.info(memberRequest.getAge());
 
-        return memberRepository.save(member);
+        Member member = Member.builder()
+                .memberName(memberRequest.getMemberName())
+                .email(memberRequest.getEmail())
+                .password(memberRequest.getPassword())
+                .age(memberRequest.getAge())
+                .role(memberRequest.getRole())
+                .build();
+        memberRepository.save(member);
+
+        String accessToken = jwtTokenProvider.createAccessToken(member.getEmail());
+        String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail());
+        Auth auth = Auth.builder()
+                .member(member)
+                .refreshToken(refreshToken)
+                .build();
+        authRepository.save(auth);
+        //토큰들을 반환한 순간 로그인 처리가 된 것임
+        return TokenResponse.builder()
+                .ACCESS_TOKEN(accessToken)
+                .REFRESH_TOKEN(refreshToken)
+                .build();
     }
 
     @Override

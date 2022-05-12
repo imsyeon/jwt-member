@@ -1,6 +1,7 @@
 package com.example.suemember.controller;
 
 import com.example.suemember.domain.entity.Member;
+import com.example.suemember.dto.TokenResponse;
 import com.example.suemember.service.MemberService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,11 +33,11 @@ public class MemberController {
 
     // 회원가입
     @PostMapping("/member")
-    public Member addNewMember(@RequestBody Member member) {
+    public ResponseEntity addNewMember(@RequestBody Member member) {
 
-        member = memberService.addNewMember(member);
-
-        return member;
+        return ResponseEntity
+                .ok()
+                .body(memberService.addNewMember(member));
     }
 
     @PostMapping("/login")

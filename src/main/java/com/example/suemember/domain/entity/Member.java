@@ -1,14 +1,12 @@
 package com.example.suemember.domain.entity;
-
-
-import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
 
-@Setter
-@Getter
+@Setter @Getter
 @Entity
+@Builder
+@AllArgsConstructor
 @ToString
 // 기본생성자 생성
 @NoArgsConstructor
