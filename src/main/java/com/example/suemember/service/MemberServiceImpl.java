@@ -94,19 +94,21 @@ public class MemberServiceImpl implements MemberService {
         Auth auth = authRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Token 이 존재하지 않습니다."));
 
-        String accessToken = "";
+        String accessToken = auth.getAccessToken();
+        log.info("accessToken01"+ accessToken);
         String refreshToken = auth.getRefreshToken();
+        log.info("refreshToken"+ refreshToken);
 
         if (jwtTokenProvider.isValidRefreshToken(refreshToken)) {
-            accessToken = jwtTokenProvider.createAccessToken(memberRequest.getEmail()); //Access Token 새로 만들어서 줌
-
+            accessToken = jwtTokenProvider.createAccessToken(updateMember.getEmail()); //Access Token 새로 만들어서 줌
+            log.info("accessToken_if문 " + accessToken);
             Member member = Member.builder()
-                    .id(id)
-                    .email(memberRequest.getEmail())
+                    .id(updateMember.getId())
+                    .email(updateMember.getEmail())
                     .memberName(memberRequest.getMemberName())
                     .password(memberRequest.getPassword())
                     .age(memberRequest.getAge())
-                    .role(memberRequest.getRole())
+                    .role(updateMember.getRole())
                     .build();
 
             System.out.println(member.toString());
@@ -121,6 +123,7 @@ public class MemberServiceImpl implements MemberService {
                     .build();
         }
 
+        log.info("accessToken02"+ accessToken);
         return TokenResponse.builder()
                 .ACCESS_TOKEN(accessToken)
                 .REFRESH_TOKEN(refreshToken)

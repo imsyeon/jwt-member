@@ -79,7 +79,7 @@ public class MemberController {
 
     @PatchMapping("/members/{id}") // serivce에서 return
     public ResponseEntity<String> updateMemeber(@RequestBody Member member, @PathVariable("id") Long id) {
-        System.out.println(id);
+        System.out.println("updateMemeber "+id);
             // 회원 정보를 불러서 비교한 뒤에 유효하면 회원 수정이 되게끔 유효성 체크 ( 롤백, 트랜잭션, 세션이 유효하지 않을 시)
         return ResponseEntity
                 .ok()
