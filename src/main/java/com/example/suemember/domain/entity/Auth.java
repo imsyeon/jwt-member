@@ -21,12 +21,12 @@ public class Auth {
     private String refreshToken;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "id")
     private Member member;
 
-    public void accessUpdate(String accessToken) {
-        this.accessToken = accessToken;
-    }
+//    public void accessUpdate(String accessToken) {
+//        this.accessToken = accessToken;
+//    }
 
     public void refreshUpdate(String refreshToken) {
         this.refreshToken = refreshToken;

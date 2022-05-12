@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -19,7 +18,6 @@ public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final AuthRepository authRepository;
-    //private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
     public MemberServiceImpl(JwtTokenProvider jwtTokenProvider, MemberRepository memberRepository, AuthRepository authRepository) {
@@ -55,6 +53,7 @@ public class MemberServiceImpl implements MemberService {
                 .refreshToken(refreshToken)
                 .build();
         authRepository.save(auth);
+
         //토큰들을 반환한 순간 로그인 처리가 된 것임
         return TokenResponse.builder()
                 .ACCESS_TOKEN(accessToken)
@@ -63,27 +62,69 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member loginMember(String email, String password) {
+    public TokenResponse loginMember(String email, String password) {
 
-        Optional<Member> loginMember = memberRepository.findByEmailAndPassword(email, password);
 
-        if (loginMember.isPresent()) {
+        Member member = memberRepository.findByEmailAndPassword(email, password)
+                .orElseThrow(() -> new IllegalArgumentException("회원 정보가 옳바르지 않습니다."));
+        Auth auth = authRepository.findById(member.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Token 이 존재하지 않습니다."));
 
-           return loginMember.get();
-        }
+        String accessToken;
+        String refreshToken;   //DB에서 가져온 Refresh 토큰
 
-        throw new IllegalArgumentException("잘못된 로그인 정보입니다.");
+        //둘 다 새로 발급
+        accessToken = jwtTokenProvider.createAccessToken(member.getEmail());
+        refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail());
+        auth.refreshUpdate(refreshToken);   //DB Refresh 토큰 갱신
+
+
+        return TokenResponse.builder()
+                .ACCESS_TOKEN(accessToken)
+                .REFRESH_TOKEN(refreshToken)
+                .build();
     }
 
     @Override
-    public Member updateMember(Long id, Member member) {
+    public TokenResponse updateMember(Long id, Member memberRequest) {
+        System.out.println(id);
+        Member updateMember = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("회원찾기 실패"));
 
-        Member updateMember = memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("회원찾기 실패"));
+        Auth auth = authRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Token 이 존재하지 않습니다."));
 
-        updateMember.setMemberName(member.getMemberName());
-        updateMember.setPassword(member.getPassword());
+        String accessToken = "";
+        String refreshToken = auth.getRefreshToken();
 
-        return memberRepository.save(updateMember);
+        if (jwtTokenProvider.isValidRefreshToken(refreshToken)) {
+            accessToken = jwtTokenProvider.createAccessToken(memberRequest.getEmail()); //Access Token 새로 만들어서 줌
+
+            Member member = Member.builder()
+                    .id(id)
+                    .email(memberRequest.getEmail())
+                    .memberName(memberRequest.getMemberName())
+                    .password(memberRequest.getPassword())
+                    .age(memberRequest.getAge())
+                    .role(memberRequest.getRole())
+                    .build();
+
+            System.out.println(member.toString());
+
+            memberRepository.save(member);
+
+            log.info(member.toString());
+
+            return TokenResponse.builder()
+                    .ACCESS_TOKEN(accessToken)
+                    .REFRESH_TOKEN(refreshToken)
+                    .build();
+        }
+
+        return TokenResponse.builder()
+                .ACCESS_TOKEN(accessToken)
+                .REFRESH_TOKEN(refreshToken)
+                .build();
     }
 
 

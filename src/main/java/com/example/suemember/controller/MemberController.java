@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -40,18 +42,21 @@ public class MemberController {
                 .body(memberService.addNewMember(member));
     }
 
+    @PostMapping("/member/test")
+    public Map userResponseTest() {
+        Map<String, String> result = new HashMap<>();
+        result.put("result","success");
+        return result;
+    }
+
     @PostMapping("/login")
+
     // responseEntity 사용 방법 확인
-    public ResponseEntity<Member> login(@RequestBody Member member, HttpServletRequest request) {
+    public ResponseEntity<TokenResponse> login(@RequestBody Member member) {
 
-        Member loginMember = memberService.loginMember(member.getEmail(), member.getPassword());
-
-        // 세션
-        HttpSession httpSession = request.getSession();
-        httpSession.setAttribute("loginMember", loginMember); // db나 spring session에 담아서 로그아웃 할 떄 검사
-
-        // 로그인 시에 ok라는 토큰을 담아서 나머지 기능 시에 비교하면서 기능을 구현해야함
-        return ResponseEntity.status(HttpStatus.OK).body(loginMember);
+        return ResponseEntity
+                .ok()
+                .body(memberService.loginMember(member.getEmail(), member.getPassword()));
     }
 
 
@@ -72,24 +77,13 @@ public class MemberController {
     }
 
 
-
-    @PatchMapping("/members/{id}") // update, delete 주소가 필요 없음 , serivce에서 return
-    public ResponseEntity<String> updateMemeber(@RequestHeader("Test-Header") String token,
-                                                @RequestBody Member member, @PathVariable("id") Long id,
-                                                HttpServletRequest request) {
-
-        HttpSession httpSession = request.getSession(false);
-
-        if (token.equals("ok") && httpSession != null) {
+    @PatchMapping("/members/{id}") // serivce에서 return
+    public ResponseEntity<String> updateMemeber(@RequestBody Member member, @PathVariable("id") Long id) {
+        System.out.println(id);
             // 회원 정보를 불러서 비교한 뒤에 유효하면 회원 수정이 되게끔 유효성 체크 ( 롤백, 트랜잭션, 세션이 유효하지 않을 시)
-          Member updateMember =  memberService.updateMember(id, member);
-            httpSession.invalidate();
-
-            return ResponseEntity.status(HttpStatus.OK).body(updateMember.toString()); // return 값 수정
-
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("update fail"); // resault status를 물고다님
+        return ResponseEntity
+                .ok()
+                .body(memberService.updateMember(id, member).toString());
     }
 
     // controller에서는 최소한의 처리만 함 session이나 토큰은 service 단으로 다 넘어가게 해서 service에서 예외처리

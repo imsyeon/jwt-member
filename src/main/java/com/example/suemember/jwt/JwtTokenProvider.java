@@ -34,7 +34,7 @@ public class JwtTokenProvider {
 
     // JWT 토큰 생성
     public String createAccessToken(String id) {
-        Claims claims = Jwts.claims();//.setSubject(userPk); // JWT payload 에 저장되는 정보단위
+        Claims claims = Jwts.claims(); // JWT payload 에 저장되는 정보단위
         claims.put("id", id);
         Date now = new Date();
         return Jwts.builder()
@@ -61,10 +61,12 @@ public class JwtTokenProvider {
 
     // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값'
     public String resolveAccessToken(HttpServletRequest request) {
+
         return request.getHeader("ACCESS_TOKEN");
     }
 
     public String resolveRefreshToken(HttpServletRequest request) {
+
         return request.getHeader("REFRESH_TOKEN");
     }
 
@@ -92,10 +94,10 @@ public class JwtTokenProvider {
         try {
             Claims accessClaims = getClaimsFormToken(token);
             System.out.println("Access expireTime: " + accessClaims.getExpiration());
-            System.out.println("Access userId: " + accessClaims.get("userId"));
+            System.out.println("Access userId: " + accessClaims.get("id"));
             return true;
         } catch (ExpiredJwtException exception) {
-            System.out.println("Token Expired UserID : " + exception.getClaims().get("userId"));
+            System.out.println("Token Expired UserID : " + exception.getClaims().get("id"));
             return false;
         } catch (JwtException exception) {
             System.out.println("Token Tampered");
