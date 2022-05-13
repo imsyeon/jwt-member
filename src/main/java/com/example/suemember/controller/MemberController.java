@@ -58,11 +58,11 @@ public class MemberController {
     }
 
     @GetMapping("/logout/{id}")
-    public ResponseEntity<TokenResponse> logout(@PathVariable("id") Long id, @RequestHeader("ACCESS_TOKEN") String accessToken, @RequestHeader("REFRESH_TOKEN") String refreshToken) {
+    public ResponseEntity<TokenResponse> logout(@PathVariable("id") Long id, @RequestHeader("REFRESH_TOKEN") String refreshToken) {
 
         return ResponseEntity
                 .ok()
-                .body(memberService.logoutMember(id, accessToken, refreshToken));
+                .body(memberService.logoutMember(id, refreshToken));
     }
 
     @PatchMapping("/members/{id}")

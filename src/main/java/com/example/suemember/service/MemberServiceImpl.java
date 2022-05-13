@@ -48,6 +48,13 @@ public class MemberServiceImpl implements MemberService {
         String accessToken = jwtTokenProvider.createAccessToken(member.getEmail());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail());
 
+        Auth authSaveRefresh = Auth.builder()
+                .email(member.getEmail())
+                .refreshToken(refreshToken)
+                .build();
+
+        authRepository.save(authSaveRefresh);
+
         return TokenResponse.builder()
                 .ACCESS_TOKEN(accessToken)
                 .REFRESH_TOKEN(refreshToken)
@@ -60,11 +67,15 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByEmailAndPassword(email, password)
                 .orElseThrow(() -> new IllegalArgumentException("회원 정보가 옳바르지 않습니다."));
 
+        Auth auth = authRepository.findByEmail(member.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Token이 존재하지 않습니다."));
+
         //둘 다 새로 발급
         String accessToken = jwtTokenProvider.createAccessToken(member.getEmail());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail());
 
         Auth authSaveRefresh = Auth.builder()
+                .authId(auth.getAuthId())
                 .email(member.getEmail())
                 .refreshToken(refreshToken)
                 .build();
@@ -103,15 +114,11 @@ public class MemberServiceImpl implements MemberService {
 
             memberRepository.save(updateMember);
 
-            log.info(updateMember.toString());
-
             return TokenResponse.builder()
                     .ACCESS_TOKEN(accessToken)
                     .REFRESH_TOKEN(refreshToken)
                     .build();
         }
-
-        log.info("accessToken02"+ accessToken);
 
         // 여기를 어떻게 처리할지 고민하기
         return TokenResponse.builder()
@@ -128,20 +135,27 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public TokenResponse logoutMember(Long id, String accessToken, String refreshToken) {
+    public TokenResponse logoutMember(Long id, String refreshToken) {
 
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("회원 찾기 실패"));
 
-        Auth auth = authRepository.findById(member.getId())
+        Auth auth = authRepository.findByEmail(member.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Token이 존재하지 않습니다."));
-        if(accessToken!=null){
 
+        if(refreshToken.equals(auth.getRefreshToken())){
+
+            authRepository.deleteById(auth.getAuthId());
+
+            return TokenResponse.builder()
+                    .ACCESS_TOKEN("logout success")
+                    .REFRESH_TOKEN("logout success")
+                    .build();
         }
 
-         authRepository.deleteById(id);
-
         return TokenResponse.builder()
+                .ACCESS_TOKEN("failed")
+                .REFRESH_TOKEN("failed")
                 .build();
     }
 }

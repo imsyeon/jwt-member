@@ -11,5 +11,5 @@ public interface MemberService {
     TokenResponse loginMember(String email, String password);
     TokenResponse updateMember (Long id, Member member);
     void deleteMember (Long id);
-    TokenResponse logoutMember(Long id, String accessToken, String refreshToken);
+    TokenResponse logoutMember(Long id, String refreshToken);
 }
