@@ -15,5 +15,6 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(jwtTokenInterceptor).addPathPatterns("/member/test");
         registry.addInterceptor(jwtTokenInterceptor).addPathPatterns("/members/{id}");
         registry.addInterceptor(jwtTokenInterceptor).addPathPatterns("/logout/{id}");
+
     }
 }

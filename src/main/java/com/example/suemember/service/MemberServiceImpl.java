@@ -127,13 +127,6 @@ public class MemberServiceImpl implements MemberService {
                 .build();
     }
 
-
-    @Override
-    public void deleteMember(Long id) {
-        memberRepository.deleteById(id);
-
-    }
-
     @Override
     public TokenResponse logoutMember(Long id, String refreshToken) {
 
@@ -144,8 +137,6 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("Token이 존재하지 않습니다."));
 
         if(refreshToken.equals(auth.getRefreshToken())){
-
-            authRepository.deleteById(auth.getAuthId());
 
             return TokenResponse.builder()
                     .ACCESS_TOKEN("logout success")
@@ -158,4 +149,26 @@ public class MemberServiceImpl implements MemberService {
                 .REFRESH_TOKEN("failed")
                 .build();
     }
+
+    @Override
+    public String deleteMember(Long id, String refreshToken) {
+
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("회원 찾기 실패"));
+
+        Auth auth = authRepository.findByEmail(member.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Token이 존재하지 않습니다."));
+
+
+        if (jwtTokenProvider.isValidRefreshToken(refreshToken) && refreshToken.equals(auth.getRefreshToken())) {
+
+            authRepository.deleteById(auth.getAuthId());
+            memberRepository.deleteById(id);
+            return "bye!";
+        }
+
+        return "failed";
+    }
+
+
 }

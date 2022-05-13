@@ -21,11 +21,4 @@ public class Auth {
     private String refreshToken;
     private String email;
 
-    public void accessUpdate(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public void refreshUpdate(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
 }

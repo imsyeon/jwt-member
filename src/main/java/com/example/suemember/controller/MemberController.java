@@ -76,22 +76,10 @@ public class MemberController {
     }
 
     @DeleteMapping("/members/{id}")
-    public ResponseEntity<String> deleteMember(@RequestHeader("Test-Header") String token,
-                                              @PathVariable("id") Long id,
-                                              HttpServletRequest request) {
+    public ResponseEntity<String> deleteMember(@PathVariable("id") Long id, @RequestHeader("REFRESH_TOKEN")String refreshToken) {
 
-        HttpSession httpSession = request.getSession(false);
-
-        if (token.equals("ok") && httpSession != null) {
-            // id 정책이 맞는지, id가 있는지 우선 확인 후에 삭제 진행  -> 중복 작업이 생기면 따로 service로 빼서 구현
-            memberService.deleteMember(id);
-            httpSession.invalidate();
-
-            // 지운 결과 return 받아서 확인 받기
-            return ResponseEntity.status(HttpStatus.OK).body("bye bye!");
-
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("회원 탈퇴 실패");
+            return ResponseEntity
+                    .ok()
+                    .body(memberService.deleteMember(id, refreshToken));
     }
 }

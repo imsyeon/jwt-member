@@ -96,10 +96,10 @@ public class JwtTokenProvider {
         try {
             Claims accessClaims = getClaimsToken(token);
             System.out.println("Access expireTime: " + accessClaims.getExpiration());
-            System.out.println("Access userId: " + accessClaims.get("userId"));
+            System.out.println("Access email: " + accessClaims.get("email"));
             return true;
         } catch (ExpiredJwtException exception) {
-            System.out.println("Token Expired UserID : " + exception.getClaims().get("userId"));
+            System.out.println("Token Expired email : " + exception.getClaims().get("email"));
             return false;
         } catch (JwtException exception) {
             System.out.println("Token Tampered");
