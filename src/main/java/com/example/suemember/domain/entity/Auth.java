@@ -19,10 +19,7 @@ public class Auth {
     private Long authId;
     private String accessToken;
     private String refreshToken;
-
-    @ManyToOne
-    @JoinColumn(name = "id")
-    private Member member;
+    private String email;
 
     public void accessUpdate(String accessToken) {
         this.accessToken = accessToken;

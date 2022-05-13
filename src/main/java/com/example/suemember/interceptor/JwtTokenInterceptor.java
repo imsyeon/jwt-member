@@ -18,7 +18,8 @@ public class JwtTokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-         log.info("intercepter");
+
+        log.info("intercepter");
         log.info("JwtToken 호출");
         String accessToken = request.getHeader("ACCESS_TOKEN");
         log.info("AccessToken:" + accessToken);

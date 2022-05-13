@@ -20,7 +20,7 @@ public class JwtTokenProvider {
     @Value("${secret.refresh}")
     private String REFRESH_KEY;// = "ref";
 
-    private final long ACCESS_TOKEN_VALID_TIME = 1 * 60 * 1000L;   // 1분
+    private final long ACCESS_TOKEN_VALID_TIME = 1 * 120 * 1000L;   // 2분
     private final long REFRESH_TOKEN_VALID_TIME = 60 * 60 * 24 * 7 * 1000L;   // 1주
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
@@ -34,7 +34,7 @@ public class JwtTokenProvider {
 
     // JWT 토큰 생성
     public String createAccessToken(String id) {
-        Claims claims = Jwts.claims(); // JWT payload 에 저장되는 정보단위
+        Claims claims = Jwts.claims(); // JWT payload에 저장되는 정보 단위
         claims.put("id", id);
         Date now = new Date();
         return Jwts.builder()
@@ -59,21 +59,6 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값'
-    public String resolveAccessToken(HttpServletRequest request) {
-
-        return request.getHeader("ACCESS_TOKEN");
-    }
-
-    public String resolveRefreshToken(HttpServletRequest request) {
-
-        return request.getHeader("REFRESH_TOKEN");
-    }
-
-    //Refresh 토큰의 DB상의 인덱스 번호를 해시로 받음
-    public Long resolveRefreshIndexToken(HttpServletRequest request) {
-        return Long.parseLong(request.getHeader("REFRESH_TOKEN_INDEX"));
-    }
 
     public Claims getClaimsFormToken(String token) {
         return Jwts.parser()
@@ -94,10 +79,10 @@ public class JwtTokenProvider {
         try {
             Claims accessClaims = getClaimsFormToken(token);
             System.out.println("Access expireTime: " + accessClaims.getExpiration());
-            System.out.println("Access email: " + accessClaims.get("id"));
+            System.out.println("Access email: " + accessClaims.get("email"));
             return true;
         } catch (ExpiredJwtException exception) {
-            System.out.println("Token Expired UserID : " + exception.getClaims().get("id"));
+            System.out.println("Token Expired email : " + exception.getClaims().get("email"));
             return false;
         } catch (JwtException exception) {
             System.out.println("Token Tampered");
@@ -124,22 +109,5 @@ public class JwtTokenProvider {
             return false;
         }
     }
-    public boolean isOnlyExpiredToken(String token) {
-        System.out.println("isValidToken is : " +token);
-        try {
-            Claims accessClaims = getClaimsFormToken(token);
-            System.out.println("Access expireTime: " + accessClaims.getExpiration());
-            System.out.println("Access userId: " + accessClaims.get("userId"));
-            return false;
-        } catch (ExpiredJwtException exception) {
-            System.out.println("Token Expired UserID : " + exception.getClaims().get("userId"));
-            return true;
-        } catch (JwtException exception) {
-            System.out.println("Token Tampered");
-            return false;
-        } catch (NullPointerException exception) {
-            System.out.println("Token is null");
-            return false;
-        }
-    }
+
 }

@@ -15,7 +15,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/") //복수로 네이밍
+@RequestMapping("/")
 public class MemberController {
 
     private final MemberService memberService;
@@ -50,8 +50,6 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-
-    // responseEntity 사용 방법 확인
     public ResponseEntity<TokenResponse> login(@RequestBody Member member) {
 
         return ResponseEntity
@@ -59,34 +57,24 @@ public class MemberController {
                 .body(memberService.loginMember(member.getEmail(), member.getPassword()));
     }
 
+    @GetMapping("/logout/{id}")
+    public ResponseEntity<TokenResponse> logout(@PathVariable("id") Long id, @RequestHeader("ACCESS_TOKEN") String accessToken, @RequestHeader("REFRESH_TOKEN") String refreshToken) {
 
-    //Test-Header값 임의로 지정해서 로그아웃
-    @GetMapping("/logout")
-    public ResponseEntity<String> logout(@RequestHeader("Test-Header") String token, HttpServletRequest request) {
-
-        HttpSession httpSession = request.getSession(false);
-
-        if (token.equals("ok") && httpSession != null) {
-
-            httpSession.invalidate();
-
-            return ResponseEntity.status(HttpStatus.OK).body("logout");
-        }
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("fail");
+        return ResponseEntity
+                .ok()
+                .body(memberService.logoutMember(id, accessToken, refreshToken));
     }
 
-
-    @PatchMapping("/members/{id}") // serivce에서 return
-    public ResponseEntity<String> updateMemeber(@RequestBody Member member, @PathVariable("id") Long id) {
+    @PatchMapping("/members/{id}")
+    public ResponseEntity<TokenResponse> updateMemeber(@RequestBody Member member, @PathVariable("id") Long id) {
         System.out.println("updateMemeber "+id);
+
             // 회원 정보를 불러서 비교한 뒤에 유효하면 회원 수정이 되게끔 유효성 체크 ( 롤백, 트랜잭션, 세션이 유효하지 않을 시)
         return ResponseEntity
                 .ok()
-                .body(memberService.updateMember(id, member).toString());
+                .body(memberService.updateMember(id, member));
     }
 
-    // controller에서는 최소한의 처리만 함 session이나 토큰은 service 단으로 다 넘어가게 해서 service에서 예외처리
     @DeleteMapping("/members/{id}")
     public ResponseEntity<String> deleteMember(@RequestHeader("Test-Header") String token,
                                               @PathVariable("id") Long id,
