@@ -4,9 +4,7 @@ import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.DatatypeConverter;
 import java.util.Base64;
 import java.util.Date;
@@ -20,7 +18,7 @@ public class JwtTokenProvider {
     @Value("${secret.refresh}")
     private String REFRESH_KEY;// = "ref";
 
-    private final long ACCESS_TOKEN_VALID_TIME = 60 * 60 * 24 * 7 * 1000L;   // 1분
+    private final long ACCESS_TOKEN_VALID_TIME = 60 * 60 * 24 * 7 * 1000L;   // 1주
     private final long REFRESH_TOKEN_VALID_TIME = 60 * 60 * 24 * 7 * 1000L;   // 1주
 
     // 객체 초기화, secretKey를 Base64로 인코딩한다.
@@ -33,9 +31,9 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰 생성
-    public String createAccessToken(String id) {
+    public String createAccessToken(String email) {
         Claims claims = Jwts.claims(); // JWT payload에 저장되는 정보 단위
-        claims.put("id", id);
+        claims.put("email", email);
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims) // 정보 저장
@@ -45,9 +43,9 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String createRefreshToken(String id) {
+    public String createRefreshToken(String email) {
         Claims claims = Jwts.claims();
-        claims.put("id", id); //
+        claims.put("email", email); //
         Date now = new Date();
         Date expiration = new Date(now.getTime() + REFRESH_TOKEN_VALID_TIME);
 
@@ -92,6 +90,13 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
+    /**
+     * refresh token 유효성 체크
+     * @param token
+     * @return
+     */
+
     public boolean isValidRefreshToken(String token) {
         try {
             Claims accessClaims = getClaimsToken(token);

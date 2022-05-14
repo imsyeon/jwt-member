@@ -114,13 +114,8 @@ public class MemberServiceImpl implements MemberService {
 
             memberRepository.save(updateMember);
 
-            return TokenResponse.builder()
-                    .ACCESS_TOKEN(accessToken)
-                    .REFRESH_TOKEN(refreshToken)
-                    .build();
         }
 
-        // 여기를 어떻게 처리할지 고민하기
         return TokenResponse.builder()
                 .ACCESS_TOKEN(accessToken)
                 .REFRESH_TOKEN(refreshToken)
@@ -128,7 +123,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public TokenResponse logoutMember(Long id, String refreshToken) {
+    public Boolean logoutMember(Long id, String refreshToken) {
 
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("회원 찾기 실패"));
@@ -136,22 +131,14 @@ public class MemberServiceImpl implements MemberService {
         Auth auth = authRepository.findByEmail(member.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Token이 존재하지 않습니다."));
 
-        if(refreshToken.equals(auth.getRefreshToken())){
+        boolean logoutStatus;
+        logoutStatus = auth.getRefreshToken().equals(refreshToken);
 
-            return TokenResponse.builder()
-                    .ACCESS_TOKEN("logout success")
-                    .REFRESH_TOKEN("logout success")
-                    .build();
-        }
-
-        return TokenResponse.builder()
-                .ACCESS_TOKEN("failed")
-                .REFRESH_TOKEN("failed")
-                .build();
+        return logoutStatus;
     }
 
     @Override
-    public String deleteMember(Long id, String refreshToken) {
+    public Boolean deleteMember(Long id, String refreshToken) {
 
         Member member = memberRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("회원 찾기 실패"));
@@ -160,14 +147,15 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("Token이 존재하지 않습니다."));
 
 
-        if (jwtTokenProvider.isValidRefreshToken(refreshToken) && refreshToken.equals(auth.getRefreshToken())) {
+        if (jwtTokenProvider.isValidRefreshToken(refreshToken) && auth.getRefreshToken().equals(refreshToken)) {
 
             authRepository.deleteById(auth.getAuthId());
             memberRepository.deleteById(id);
-            return "bye!";
+
+            return true;
         }
 
-        return "failed";
+        return false;
     }
 
 

@@ -58,7 +58,7 @@ public class MemberController {
     }
 
     @GetMapping("/logout/{id}")
-    public ResponseEntity<TokenResponse> logout(@PathVariable("id") Long id, @RequestHeader("REFRESH_TOKEN") String refreshToken) {
+    public ResponseEntity<Boolean> logout(@PathVariable("id") Long id, @RequestHeader("REFRESH_TOKEN") String refreshToken) {
 
         return ResponseEntity
                 .ok()
@@ -76,7 +76,7 @@ public class MemberController {
     }
 
     @DeleteMapping("/members/{id}")
-    public ResponseEntity<String> deleteMember(@PathVariable("id") Long id, @RequestHeader("REFRESH_TOKEN")String refreshToken) {
+    public ResponseEntity<Boolean> deleteMember(@PathVariable("id") Long id, @RequestHeader("REFRESH_TOKEN")String refreshToken) {
 
             return ResponseEntity
                     .ok()

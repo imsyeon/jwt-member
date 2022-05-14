@@ -10,6 +10,6 @@ public interface MemberService {
     TokenResponse addNewMember (Member member);
     TokenResponse loginMember(String email, String password);
     TokenResponse updateMember (Long id, Member member);
-    String deleteMember (Long id, String refreshToken);
-    TokenResponse logoutMember(Long id, String refreshToken);
+    Boolean deleteMember (Long id, String refreshToken);
+    Boolean logoutMember(Long id, String refreshToken);
 }
