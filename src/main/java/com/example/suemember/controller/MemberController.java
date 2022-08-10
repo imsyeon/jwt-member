@@ -42,12 +42,6 @@ public class MemberController {
                 .body(memberService.addNewMember(member));
     }
 
-    @PostMapping("/member/test")
-    public Map userResponseTest() {
-        Map<String, String> result = new HashMap<>();
-        result.put("result","success");
-        return result;
-    }
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponse> login(@RequestBody Member member) {
@@ -67,9 +61,7 @@ public class MemberController {
 
     @PatchMapping("/members/{id}")
     public ResponseEntity<TokenResponse> updateMemeber(@RequestBody Member member, @PathVariable("id") Long id) {
-        System.out.println("updateMemeber "+id);
 
-            // 회원 정보를 불러서 비교한 뒤에 유효하면 회원 수정이 되게끔 유효성 체크 ( 롤백, 트랜잭션, 세션이 유효하지 않을 시)
         return ResponseEntity
                 .ok()
                 .body(memberService.updateMember(id, member));

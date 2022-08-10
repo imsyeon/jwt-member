@@ -35,7 +35,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public TokenResponse addNewMember(Member memberRequest) {
 
-        // 중복체크, 공백 체크, 이메일 유효성 확인
+       /* todo
+        중복 체크
+        공백 체크
+        이메일 유효성 확인 */
+
         Member member = Member.builder()
                 .memberName(memberRequest.getMemberName())
                 .email(memberRequest.getEmail())
@@ -70,7 +74,10 @@ public class MemberServiceImpl implements MemberService {
         Auth auth = authRepository.findByEmail(member.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Token이 존재하지 않습니다."));
 
-        //둘 다 새로 발급
+        /*
+        로그인 시 accessToken, refreshToken 모두 새로 발급
+        */
+
         String accessToken = jwtTokenProvider.createAccessToken(member.getEmail());
         String refreshToken = jwtTokenProvider.createRefreshToken(member.getEmail());
 
@@ -97,11 +104,16 @@ public class MemberServiceImpl implements MemberService {
         Auth auth = authRepository.findByEmail(member.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Token이 존재하지 않습니다."));
 
+
+
         String accessToken = "";
         String refreshToken = auth.getRefreshToken();
 
         if (jwtTokenProvider.isValidRefreshToken(refreshToken)) {
-            accessToken = jwtTokenProvider.createAccessToken(member.getEmail()); //Access Token 새로 만들어서 줌
+            accessToken = jwtTokenProvider.createAccessToken(member.getEmail()); //Access Token 새로 발급
+
+            /*회원 정보를 불러서 비교한 뒤에 유효하면 회원 수정이 되게끔 유효성 확인
+        (롤백, 트랜잭션)*/
 
             Member updateMember = Member.builder()
                     .id(member.getId())

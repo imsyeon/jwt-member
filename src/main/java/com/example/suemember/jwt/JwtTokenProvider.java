@@ -14,23 +14,23 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     @Value("${secret.access}")
-    private String SECRET_KEY;// = "sec";
+    private String SECRET_KEY;
     @Value("${secret.refresh}")
-    private String REFRESH_KEY;// = "ref";
+    private String REFRESH_KEY;
 
-    private final long ACCESS_TOKEN_VALID_TIME = 60 * 60 * 24 * 7 * 1000L;   // 1주
+    private final long ACCESS_TOKEN_VALID_TIME = 1 * 120 * 1000L;   // 2분
     private final long REFRESH_TOKEN_VALID_TIME = 60 * 60 * 24 * 7 * 1000L;   // 1주
 
-    // 객체 초기화, secretKey를 Base64로 인코딩한다.
+    /*객체 초기화
+    secretKey를 Base64로 인코딩*/
     @PostConstruct
     protected void init() {
-        System.out.println("SECRET_KEY: "+SECRET_KEY);
-        System.out.println("REFRESH_KEY = " + REFRESH_KEY);
+
         SECRET_KEY = Base64.getEncoder().encodeToString(SECRET_KEY.getBytes());
         REFRESH_KEY = Base64.getEncoder().encodeToString(REFRESH_KEY.getBytes());
     }
 
-    // JWT 토큰 생성
+    /*JWT 토큰 생성*/
     public String createAccessToken(String email) {
         Claims claims = Jwts.claims(); // JWT payload에 저장되는 정보 단위
         claims.put("email", email);
@@ -39,13 +39,13 @@ public class JwtTokenProvider {
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_VALID_TIME)) // set Expire Time
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)  // 사용할 암호화 알고리즘과
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 
     public String createRefreshToken(String email) {
         Claims claims = Jwts.claims();
-        claims.put("email", email); //
+        claims.put("email", email);
         Date now = new Date();
         Date expiration = new Date(now.getTime() + REFRESH_TOKEN_VALID_TIME);
 
